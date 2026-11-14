@@ -3,7 +3,7 @@
 const MODEL = "gemini-2.5-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
-const SYSTEM_INSTRUCTION = `أنت مساعد علمي داخل تطبيق "Blink Sphere — SPHEREx Spectral Lab" (هاكاثون NASA Space Apps).
+const SYSTEM_INSTRUCTION = `أنت مساعد علمي داخل تطبيق "Blink Sphere" — منصة تفاعلية لبيانات تلسكوب SPHEREx (هاكاثون NASA Space Apps).
 مهمتك: تفسير طيف بكسل واحد من مكعب SPHEREx التجريبي، وربطه بالجليد (H2O 3.0µm، CO2 4.27µm، CO 4.67µm) وبدرجة الشذوذ الطيفي.
 
 قواعد صارمة:

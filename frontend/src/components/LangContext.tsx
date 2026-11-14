@@ -12,14 +12,14 @@ interface LangCtxType {
 const LangContext = createContext<LangCtxType | null>(null);
 
 const DICT: Record<string, Record<Lang, string>> = {
-  appTitle: { ar: "SPHEREx Spectral Lab", en: "SPHEREx Spectral Lab" },
+  appTitle: { ar: "Blink Sphere", en: "Blink Sphere" },
   navHome: { ar: "الرئيسية", en: "Home" },
   navExplorer: { ar: "المستكشف", en: "Explorer" },
   navCandidates: { ar: "المرشحون", en: "Candidates" },
   navMission: { ar: "مهمة سريعة", en: "Mission" },
   navAbout: { ar: "حول المشروع", en: "About" },
   langLabel: { ar: "اللغة", en: "Language" },
-  homeTitle: { ar: "مرحباً بك في مختبر SPHEREx الطيفي", en: "Welcome to the SPHEREx Spectral Lab" },
+  homeTitle: { ar: "مرحباً بك في Blink Sphere", en: "Welcome to Blink Sphere" },
   homeSub:
     { ar: "أدوات تفاعلية لاكتشاف الأجرام والجليد والأجسام الغريبة من بيانات تلسكوب SPHEREx التابعة لناسا (102 قناة طيفية، 0.75–5.0 ميكرون).", en: "Interactive tools to discover objects, ice, and weird sources from NASA SPHEREx data (102 spectral channels, 0.75–5.0 µm)." },
   toolRgb: { ar: "مُركّب ألوان طيفي (RGB)", en: "Spectral RGB Synthesizer" },

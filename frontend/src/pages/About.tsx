@@ -50,7 +50,7 @@ export default function AboutPage({ t, go }: { t: (k: string) => string; go: (p:
       </div>
 
       <div className="text-xs text-space-500 text-center">
-        NASA / IPAC IRSA · SPHEREx Spectral Lab · مساحة ناسا للتطبيقات
+        NASA / IPAC IRSA · Blink Sphere · مساحة ناسا للتطبيقات
       </div>
     </div>
   );

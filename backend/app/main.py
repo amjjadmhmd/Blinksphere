@@ -1,4 +1,4 @@
-"""FastAPI backend لـ SPHEREx Spectral Lab.
+"""FastAPI backend لـ Blink Sphere.
 يخدم المكعب الثنائي + النتائج المحسوبة مسبقًا (fallback اصطناعي).
 """
 
@@ -16,7 +16,7 @@ from fastapi.responses import JSONResponse, FileResponse
 APP_DIR = Path(__file__).resolve().parent.parent  # backend/
 DATA_DIR = APP_DIR.parent / "public" / "data"
 
-app = FastAPI(title="SPHEREx Spectral Lab API")
+app = FastAPI(title="Blink Sphere API")
 
 app.add_middleware(
     CORSMiddleware,

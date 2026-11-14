@@ -54,7 +54,7 @@ export default function App() {
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded bg-gradient-to-br from-nebula-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-nebula-500/30">
-              S
+              B
             </div>
             <span className="font-bold text-xl tracking-tight">{t("appTitle")}</span>
           </div>

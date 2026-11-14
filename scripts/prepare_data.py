@@ -1,5 +1,5 @@
 """
-prepare_data.py — يولّد مكعبًا طيفيًا اصطناعيًا واقعيًا (fallback) لـ SPHEREx Spectral Lab.
+prepare_data.py — يولّد مكعبًا طيفيًا اصطناعيًا واقعيًا (fallback) لـ Blink Sphere.
 
 المكونات:
   - نجوم (طيف بودي أسود بدرجات حرارة مختلفة)
