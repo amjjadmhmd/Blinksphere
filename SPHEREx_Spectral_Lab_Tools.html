@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPHEREx Spectral Lab - الأدوات والتقنيات المستخدمة</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: 'Segoe UI', Tahoma, 'Arial', sans-serif; direction: rtl; line-height: 1.6; color: #1e293b; max-width: 1000px; margin: 0 auto; padding: 20px; }
+  h1 { color: #0f172a; text-align: center; border-bottom: 3px solid #6366f1; padding-bottom: 10px; }
+  h2 { color: #6366f1; border-left: 5px solid #6366f1; padding-left: 10px; margin-top: 30px; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 14px; }
+  th { background: #0f172a; color: white; padding: 10px; text-align: right; border: 1px solid #334155; }
+  td { padding: 8px 10px; border: 1px solid #e2e8f0; text-align: right; }
+  tr:nth-child(even) { background: #f8fafc; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; color: white; }
+  .lang { background: #6366f1; }
+  .backend { background: #059669; }
+  .frontend { background: #7c3aed; }
+  .data { background: #dc2626; }
+  .deploy { background: #0891b2; }
+  .footer { margin-top: 40px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+  .note { background: #fef3c7; border: 1px solid #f59e0b; padding: 12px; border-radius: 6px; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<h1>مختبر SPHEREx الطيفي — SPHEREx Spectral Lab</h1>
+<p style="text-align:center; color:#64748b;">قائمة الأدوات والبرامج واللغات البرمجية المستخدمة في بناء المشروع</p>
+
+<div class="note"><strong>ملاحظة:</strong> هذا المستند مخصص لنموذج تسليم مسابقة ناسا للتطبيقات الفضائية (NASA Space Apps). يمكن طباعته إلى PDF عبر المتصفح (Ctrl+P → Save as PDF).</div>
+
+<h2>1. لغات البرمجة</h2>
+<table>
+  <tr><th>#</th><th>اللغة</th><th>الاستخدام في المشروع</th></tr>
+  <tr><td>1</td><td><span class="badge lang">Python 3.14.3</span></td><td>الباك إند (FastAPI)، تحضير البيانات وتوليد المكعب الطيفي الاصطناعي (<code>prepare_data.py</code>)</td></tr>
+  <tr><td>2</td><td><span class="badge lang">TypeScript</span></td><td>واجهة المستخدم الأمامية (React مع typing قوي)</td></tr>
+  <tr><td>3</td><td><span class="badge lang">JavaScript</span></td><td>تشغيل React في المتصفح (عبر ترجمة TypeScript)</td></tr>
+  <tr><td>4</td><td><span class="badge lang">HTML5 + CSS3</span></td><td>هيكل وتنسيق الصفحات (مع Tailwind CSS)</td></tr>
+  <tr><td>5</td><td><span class="badge lang">PowerShell</span></td><td>تشغيل الأوامر والنصوص على نظام ويندوز</td></tr>
+</table>
+
+<h2>2. الخلفية (Backend — FastAPI)</h2>
+<table>
+  <tr><th>#</th><th>الأداة / المكتبة</th><th>الإصدار (تقريبي)</th><th>الغرض</th></tr>
+  <tr><td>6</td><td>FastAPI</td><td>0.115+</td><td>إطار العمل للباك إند وواجهة API RESTful</td></tr>
+  <tr><td>7</td><td>Uvicorn</td><td>0.30+</td><td>خادم ASGI لتشغيل تطبيق FastAPI</td></tr>
+  <tr><td>8</td><td>NumPy</td><td>2.5.4</td><td>الحسابات العددية، المكعب الطيفي (cube) بحجم 128×128×102</td></tr>
+  <tr><td>9</td><td>SciPy</td><td>1.18</td><td>الحسابات العلمية والتكامل</td></tr>
+  <tr><td>10</td><td>scikit-learn</td><td>1.5+</td><td>كشف الأجسام الشاذة (IsolationForest) للمرشدين</td></tr>
+  <tr><td>11</td><td>Astropy</td><td>7.0+</td><td>قراءة ملفات FITS والحسابات الفلكية</td></tr>
+  <tr><td>12</td><td>Astroquery</td><td>0.4.9</td><td>الوصول إلى أرشيف NASA/IPAC IRSA (خطط الربط بالبيانات الحقيقية)</td></tr>
+  <tr><td>13</td><td>Pydantic</td><td>2.8+</td><td>التحقق من صحة البيانات الواردة والصادرة من API</td></tr>
+  <tr><td>14</td><td>python-multipart</td><td>0.0.9</td><td>دعم تحميل الملفات عبر API</td></tr>
+  <tr><td>15</td><td>SQLite</td><td>—</td><td>تخزين أصوات المتطوعين في micro-tasks (الخيار البديل: localStorage)</td></tr>
+</table>
+
+<h2>3. الواجهة الأمامية (Frontend)</h2>
+<table>
+  <tr><th>#</th><th>الأداة / المكتبة</th><th>الإصدار (تقريبي)</th><th>الغرض</th></tr>
+  <tr><td>16</td><td>Vite</td><td>5.4</td><td>أداة البناء وخادم التطوير السريع</td></tr>
+  <tr><td>17</td><td>React</td><td>18.3</td><td>مكتبة واجهة المستخدم التفاعلية</td></tr>
+  <tr><td>18</td><td>TypeScript</td><td>5.6</td><td>إضافة الكتابة الثابتة (typing) للكود الأمامي</td></tr>
+  <tr><td>19</td><td>Tailwind CSS</td><td>3.4</td><td>تنسيق الواجهة (ثيم داكن فضائي، دعم RTL للغة العربية، متجاوب مع الموبايل)</td></tr>
+  <tr><td>20</td><td>PostCSS + Autoprefixer</td><td>—</td><td>معالجة CSS وإضافة البادئات للمتصفحات</td></tr>
+  <tr><td>21</td><td>Plotly.js (<code>plotly.js-dist-min</code>, <code>react-plotly.js</code>)</td><td>2.35</td><td>رسم الأطياف الطيفية، الخرائط الحرارية، والرسم ثلاثي الأبعاد (3D)</td></tr>
+  <tr><td>22</td><td>lucide-react</td><td>0.469</td><td>مجموعة الأيقونات المستخدمة في الواجهة</td></tr>
+  <tr><td>23</td><td>clsx + tailwind-merge</td><td>—</td><td>دمج وإدارة فئات CSS في مكونات React</td></tr>
+  <tr><td>24</td><td>Web Audio API</td><td>— (متصفح)</td><td>تحويل الطيف الطيفي إلى صوت (spectrum sonification)</td></tr>
+  <tr><td>25</td><td>Canvas API</td><td>— (متصفح)</td><td>رسم المكعب الطيفي وألوان R/G/B مباشرة في المتصفح</td></tr>
+</table>
+
+<h2>4. البيانات والتخزين</h2>
+<table>
+  <tr><th>#</th><th>الصيغة / المصدر</th><th>الغرض</th></tr>
+  <tr><td>26</td><td>.bin (Binary Float32)</td><td>المكعب الطيفي المضغوط (128×128×102 قناة)</td></tr>
+  <tr><td>27</td><td>JSON</td><td>بيانات التعريف (metadata)، أطياف مرجعية، خرائط الجليد، المرشحين المحسبين مسبقاً</td></tr>
+  <tr><td>28</td><td>localStorage</td><td>تخزين أصوات المتطوعين محلياً في المتصفح للمهمات الجماعية (crowd micro-tasks)</td></tr>
+  <tr><td>29</td><td>NASA/IPAC IRSA</td><td>مصدر البيانات الحقيقية لتلسكوب SPHEREx (مخطط للربط المستقبلي عبر astroquery)</td></tr>
+  <tr><td>30</td><td>البيان الاصطناعي (Synthetic / Demo data)</td><td>مكعب طيفي توليده <code>prepare_data.py</code> للسماح ببناء واختبار الواجهة فوراً، ويظهر بعلامة "بيان تجريبي / اصطناعي" في الواجهة</td></tr>
+</table>
+
+<h2>5. النشر (Deployment — مخطط)</h2>
+<table>
+  <tr><th>#</th><th>المنصة</th><th>الغرض</th></tr>
+  <tr><td>31</td><td>Vercel</td><td>نشر واجهة React (frontend) كموقع סטטי</td></tr>
+  <tr><td>32</td><td>Render / Railway</td><td>نشر الباك إند FastAPI (backend)</td></tr>
+  <tr><td>33</td><td>Docker / docker-compose</td><td>حزمة تشغيل كاملة للمشروع (خيار بديل للنشر الموحد)</td></tr>
+</table>
+
+<h2>6. المصادر العلمية المعتمدة</h2>
+<ul>
+  <li><strong>NASA/IPAC IRSA</strong> — أرشيف تلسكوب SPHEREx العام (Spectral Images / Quick Release)</li>
+  <li><strong>SpeX Prism Library</strong> — قوالب مرجعية للأقزام البنية</li>
+  <li><strong>Pickles stellar templates</strong> — قوالب مرجعية للنجوم</li>
+  <li><strong>EAZY galaxy templates</strong> — قوالب مرجعية للمجرات</li>
+  <li><strong>أطياف جليد مفتوحة</strong> — خطوط امتصاص H₂O، CO₂، CO من أبحاث مفتوحة</li>
+</ul>
+
+<div class="footer">
+  SPHEREx Spectral Lab — NASA Space Apps Project · 기타 synthetic data يُستخدم لغرض التطوير فقط ويُظهر بوضوح كـ "Synthetic / Demo data" في الواجهة.
+</div>
+
+</body>
+</html>

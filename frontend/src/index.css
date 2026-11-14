@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #020617;
+    --panel: #0f172a;
+    --panel-border: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #6366f1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-space-900 text-space-100 antialiased selection:bg-nebula-500 selection:text-white;
+    font-family: Tahoma, "Segoe UI", system-ui, sans-serif;
+  }
+
+  /* DNA of the dark space theme */
+  [dir="rtl"] body {
+    /* تم ضبط الاتجاه تلقائياً عبر السمة dir */
+  }
+
+  /* شريط تمرير أنيق */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #020617;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+
+  /* صورة المكعب حادة (بلا تمويه) */
+  .crisp-image {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* شريط التمرير المخصص للسطوع */
+  input[type="range"] {
+    accent-color: #6366f1;
+  }
+
+  .glass-panel {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(30, 41, 59, 0.6);
+  }
+
+  .badge-synthetic {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium;
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-space-600 bg-space-800 text-space-100 px-4 py-2 font-medium transition hover:bg-space-700 hover:border-nebula-500 focus:outline-none focus:ring-2 focus:ring-nebula-500 focus:ring-offset-2 focus:ring-offset-space-900 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-nebula-500 border-nebula-500 text-white hover:bg-nebula-600 hover:border-nebula-400;
+  }
+  .btn-outline {
+    @apply btn border-space-600 text-space-200 hover:bg-space-700 hover:border-space-400;
+  }
+  .input {
+    @apply w-full rounded-md border border-space-700 bg-space-800/50 text-space-100 placeholder-space-500 px-3 py-2 transition focus:border-nebula-500 focus:outline-none focus:ring-1 focus:ring-nebula-500;
+  }
+  .label {
+    @apply block text-sm font-medium text-space-300 mb-1.5;
+  }
+  .card {
+    @apply glass-panel rounded-xl p-4;
+  }
+  .section-title {
+    @apply text-lg font-semibold text-space-100 mb-3 flex items-center gap-2;
+  }
+}
