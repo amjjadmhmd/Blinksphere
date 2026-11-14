@@ -13,5 +13,12 @@ export default defineConfig({
   // حتى تُرفع مع النشر وتُخدم على /data/ في dev و production.
   server: {
     port: 5173,
+    proxy: {
+      // في التطوير فقط: نحوّل /api إلى دالة Vercel المنشورة (المفتاح يبقى على السيرفر)
+      "/api": {
+        target: "https://blinksphere.vercel.app",
+        changeOrigin: true,
+      },
+    },
   },
 });

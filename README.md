@@ -1,6 +1,6 @@
 # SPHEREx Spectral Lab
 
-ويب أب علمي تفاعلي لاستكشاف بيانات تلسكوب **SPHEREx** التابع لناسا (102 قناة طيفية، 0.75–5.0 ميكرون، مسح كامل للsky).
+ويب أب علمي تفاعلي لاستكشاف بيانات تلسكوب **SPHEREx** التابع لناسا (102 قناة طيفية، 0.75–5.0 ميكرون، مسح كامل للسماء).
 
 ## الحالة الحالية
 الواجهة تعمل على **بيان اصطناعي (Synthetic / Demo data)** للتطوير والاختبار الفوري. يتميز بوضوح في الواجهة بـ `badge-synthetic`. الربط بالبيان الحقيقي من **NASA/IPAC IRSA** عبر `astroquery` + خدمات SIA/TAP هو الخطوة التالية.
@@ -13,18 +13,20 @@
 │   └── requirements.txt
 ├── scripts/
 │   └── prepare_data.py       # يولّد المكعب الاصطناعي + النتائج المحسوبة مسبقاً
-├── public/data/              # المكعب الثنائي + ملفات JSON المحسوبة
+├── frontend/public/data/     # المكعب الثنائي + ملفات JSON المحسوبة (تُنشر مع الموقع)
 │   ├── cube.bin              # Float32 (ny, nx, nwave)
 │   ├── metadata.json         # أطوال الموجة + الإحداثيات
 │   ├── reference_spectra.json
 │   ├── ice_maps.json
 │   └── precomputed.json      # anomaly map + flags
+├── frontend/api/chat.js      # Serverless: مساعد Gemini (المفتاح في env فقط)
 ├── frontend/                 # Vite + React + TS + Tailwind
 │   ├── src/
 │   │   ├── App.tsx           # الغلاف + التنقل + تبديل اللغة
 │   │   ├── components/LangContext.tsx
 │   │   ├── components/CanvasViewer.tsx   # الأداة 1: RGB Synthesizer
 │   │   ├── components/SpectrumPanel.tsx  # الأداة 2: البصمة الطيفية
+│   │   ├── components/SpectralAssistant.tsx # مساعد AI للبكسل المختار
 │   │   └── pages/            # Home, Explorer, Candidates, Mission, About
 │   └── package.json
 └── README.md
@@ -65,7 +67,7 @@ npm run dev   # يعمل على http://localhost:5173
 ```
 http://localhost:5173
 ```
-الباك إند يُوفّر API على `http://127.0.0.1:8000`، والواجهة تُ proxy `/api` إليه أثناء التطوير (vite.config.ts).
+الباك إند FastAPI (اختياري) يُوفّر API على `http://127.0.0.1:8000`. الواجهة لا تحتاجه: تقرأ البيانات من `/data/` مباشرة، و`/api` أثناء التطوير يمرّر إلى دالة Vercel المنشورة للمساعد الطيفي.
 
 ## نقاط نهاية API رئيسية
 - `GET /health` — حالة التحميل
@@ -91,10 +93,26 @@ http://localhost:5173
 - مطابقة البصمة تعتمد على قوالب مرجعية مبسطة.
 - كشف الشذوذ (IsolationForest) يُظهر مرشحين للمراجعة البشرية، ليس تأكيداً علمياً.
 
-## النشر (Deploy)
-- الواجهة: Vercel (`npm run build` → `dist`)
-- الباك إند: Render / Railway (تثبيت requirements.txt + تشغيل uvicorn)
-- أو بالكامل סטטי: خذ `public/data/` (JSON + bin) ونشر الواجهة كموقع ستاتيكي مع حفظ الأصوات في `localStorage`.
+## النشر (Deploy) — الوضع الحالي: static على Vercel
+- الرابط: https://blinksphere.vercel.app
+- البناء: `cd frontend; npm run build` → `dist` (يحتوي `dist/data/` كاملاً).
+- النشر: `cd frontend; npx vercel --prod --yes`
+- `frontend/vercel.json` يستخدم `{ "handle": "filesystem" }` أولاً ثم fallback إلى `/index.html`، حتى تُخدم `/data/*` و `/api/*` كملفات حقيقية.
+- الباك إند FastAPI أصبح **اختيارياً**؛ الواجهة لا تنادي `localhost:8000` إطلاقاً.
+
+## المساعد الطيفي (Gemini) — إعداد المفتاح
+المفتاح **لا يُخزَّن في الكود ولا في Git**، بل في متغيّر بيئة على Vercel:
+
+```powershell
+cd frontend
+# ضع مفتاح Google AI Studio مرة واحدة (لن يُطبع ولن يُحفظ في المستودع)
+"<YOUR_GEMINI_KEY>" | npx vercel env add GEMINI_API_KEY production
+npx vercel --prod --yes
+```
+
+- الدالة: `frontend/api/chat.js` (Vercel Serverless، Node ESM) تنادي `gemini-2.5-flash` عبر `x-goog-api-key`.
+- الفرونت ينادي `POST /api/chat` فقط، ويُرجع نص الإجابة. لا يوجد أي مفتاح في الحزمة (تم التحقق من `dist/assets`).
+- أثناء التطوير المحلي، `vite.config.ts` يمرّر `/api` إلى الموقع المنشور (المفتاح يبقى على السيرفر فقط).
 
 ## التطوير التالي (إن وجد وقت)
 الأدوات 4–7: Weird Object Radar مكتمل جزئياً (قائمة المرشحين)، Crowd Micro-Tasks (الصفحة Mission)، Redshift Estimator، Spectrum Sonification.

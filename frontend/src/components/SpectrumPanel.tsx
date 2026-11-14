@@ -15,6 +15,7 @@ interface SpectrumPanelProps {
   y: number | null;
   referenceSpectra: Record<string, number[]> | null;
   synthetic: boolean;
+  onAnalysis?: (a: { matches: { name: string; sim: number }[]; depths: Record<string, number> }) => void;
 }
 
 const ICE_LINES = [
@@ -67,6 +68,7 @@ export default function SpectrumPanel({
   y,
   referenceSpectra,
   synthetic,
+  onAnalysis,
 }: SpectrumPanelProps) {
   const plotRef = useRef<HTMLDivElement>(null);
   const [matches, setMatches] = useState<{ name: string; sim: number }[]>([]);
@@ -124,6 +126,15 @@ export default function SpectrumPanel({
     }
     setDepths(d);
   }, [flux, wavelength]);
+
+  useEffect(() => {
+    if (!onAnalysis) return;
+    if (!flux) {
+      onAnalysis({ matches: [], depths: {} });
+      return;
+    }
+    onAnalysis({ matches, depths });
+  }, [matches, depths, flux, onAnalysis]);
 
   return (
     <div className="card h-full flex flex-col min-h-0">

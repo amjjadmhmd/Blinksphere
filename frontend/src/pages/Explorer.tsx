@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import CanvasViewer from "@/components/CanvasViewer";
 import SpectrumPanel from "@/components/SpectrumPanel";
+import SpectralAssistant from "@/components/SpectralAssistant";
 
 const API_UNUSED = ""; // لا يوجد أي استدعاء للباك إند — كل البيانات تُقرأ من /data/ مباشرة (static deploy)
 
@@ -54,12 +55,18 @@ export default function ExplorerPage() {
   const [selX, setSelX] = useState<number | null>(null);
   const [selY, setSelY] = useState<number | null>(null);
   const [flux, setFlux] = useState<number[] | null>(null);
+  const [analysis, setAnalysis] = useState<{ matches: { name: string; sim: number }[]; depths: Record<string, number> } | null>(null);
 
   // حالة الجليد
   const [iceType, setIceType] = useState<string | null>("H2O_ice");
   const [iceOpacity, setIceOpacity] = useState(0.5);
   const [iceVisible, setIceVisible] = useState(false);
   const heatCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  const handleAnalysis = useCallback(
+    (a: { matches: { name: string; sim: number }[]; depths: Record<string, number> }) => setAnalysis(a),
+    []
+  );
 
   const loadData = useCallback(async () => {
     try {
@@ -183,6 +190,15 @@ export default function ExplorerPage() {
   const nx = meta.nx, ny = meta.ny, nwave = meta.nwave;
   const synthetic = !!meta.synthetic;
 
+  const anomalyScore: number | null = (() => {
+    if (selX == null || selY == null || !precomputed) return null;
+    const flagged = (precomputed.flags || []).find((f: any) => f.x === selX && f.y === selY);
+    if (flagged && typeof flagged.score === "number") return flagged.score;
+    const m = precomputed.anomaly_map;
+    if (Array.isArray(m) && m[selY] && typeof m[selY][selX] === "number") return m[selY][selX];
+    return null;
+  })();
+
   return (
     <div className="flex flex-col h-full gap-4 p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:gap-4 gap-3">
@@ -287,6 +303,20 @@ export default function ExplorerPage() {
             y={selY}
             referenceSpectra={refs}
             synthetic={synthetic}
+            onAnalysis={handleAnalysis}
+          />
+          <SpectralAssistant
+            lang={lang}
+            context={{
+              x: selX ?? 0,
+              y: selY ?? 0,
+              wavelength: meta.wavelength_um as number[],
+              flux,
+              iceDepths: analysis?.depths ?? null,
+              matches: analysis?.matches ?? null,
+              anomalyScore,
+              synthetic,
+            }}
           />
           <div className="card p-3 border-space-800">
             <h3 className="text-xs font-semibold text-space-300 uppercase tracking-wider mb-3">المرشحون الشاذون (أداة 4 مبدئي)</h3>
