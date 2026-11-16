@@ -12,6 +12,7 @@ import {
   Scissors,
   Link,
 } from "lucide-react";
+import { useLang } from "@/components/LangContext";
 
 interface CanvasViewerProps {
   cube: Float32Array;
@@ -22,6 +23,9 @@ interface CanvasViewerProps {
   onPixelSelect: (x: number, y: number) => void;
   selectedX?: number | null;
   selectedY?: number | null;
+  markers?: { x: number; y: number; score: number }[];
+  showMarkers?: boolean;
+  onMarkerClick?: (x: number, y: number) => void;
 }
 
 function percentile(sorted: Float32Array, p: number): number {
@@ -72,7 +76,12 @@ export default function CanvasViewer({
   onPixelSelect,
   selectedX,
   selectedY,
+  markers = [],
+  showMarkers = true,
+  onMarkerClick,
 }: CanvasViewerProps) {
+  const { lang } = useLang();
+  const ar = lang === "ar";
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -153,6 +162,24 @@ export default function CanvasViewer({
     if (canvas) ctxRef.current = canvas.getContext("2d");
   }, []);
 
+  // preset قادم من زر «جرّب الديمو» في الصفحة الرئيسية
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("blink_preset");
+      if (!raw) return;
+      const p = JSON.parse(raw);
+      const ok = [p?.r, p?.g, p?.b].every((v) => Number.isInteger(v) && v >= 0 && v < nwave);
+      if (ok) {
+        setRCh(p.r);
+        setGCh(p.g);
+        setBCh(p.b);
+      }
+      localStorage.removeItem("blink_preset");
+    } catch {
+      /* ignore */
+    }
+  }, [nwave]);
+
   useEffect(() => {
     draw();
   }, [draw]);
@@ -198,7 +225,7 @@ export default function CanvasViewer({
       {/* شريط التحكم R/G/B */}
       <div className="flex flex-wrap gap-3 p-3 border-b border-space-800 bg-space-900/80 backdrop-blur z-10">
         <div className="flex items-center gap-2 text-xs font-medium text-space-300 uppercase tracking-wider">
-          <Image className="w-3 h-3" /> قنوات R/G/B
+          <Image className="w-3 h-3" /> {ar ? "قنوات R/G/B" : "R/G/B channels"}
         </div>
         {[rCh, gCh, bCh].map((ch, i) => (
           <div key={i} className="flex flex-col gap-1">
@@ -226,7 +253,7 @@ export default function CanvasViewer({
             onClick={() => setRatioMode((m) => !m)}
             className={`btn btn-outline text-xs px-2 py-1.5 ${ratioMode ? "bg-nebula-500/20 border-nebula-500 text-nebula-300" : ""}`}
           >
-            <Link className="w-3 h-3 mr-1" /> نسبة
+            <Link className="w-3 h-3 mr-1" /> {ar ? "نسبة" : "Ratio"}
           </button>
           {ratioMode && (
             <>
@@ -256,26 +283,27 @@ export default function CanvasViewer({
           )}
         </div>
         <div className="ml-auto flex items-end gap-2">
+          <span className="text-[10px] text-space-500 uppercase self-center mr-1">{ar ? "ألوان جاهزة" : "Presets"}</span>
           <button
             onClick={() => presetHandler(presets[0].channels)}
-            className="btn btn-outline text-xs px-2 py-1.5 gap-1"
-            title="ميثان"
+            className="btn btn-outline text-xs px-3 py-2 gap-1 font-semibold border-space-600 hover:border-nebula-400"
+            title={ar ? "ميثان: 1.6 / 2.2 / 3.3 ميكرون" : "Methane: 1.6 / 2.2 / 3.3 µm"}
           >
-            <Scissors className="w-3 h-3" /> ميثان
+            <Scissors className="w-3 h-3" /> {ar ? "ميثان" : "Methane"}
           </button>
           <button
             onClick={() => presetHandler(presets[1].channels)}
-            className="btn btn-outline text-xs px-2 py-1.5 gap-1"
-            title="بخار ماء"
+            className="btn btn-outline text-xs px-3 py-2 gap-1 font-semibold border-space-600 hover:border-nebula-400"
+            title={ar ? "ماء: 1.4 / 1.9 ميكرون" : "Water: 1.4 / 1.9 µm"}
           >
-            <Palette className="w-3 h-3" /> ماء
+            <Palette className="w-3 h-3" /> {ar ? "ماء" : "Water"}
           </button>
           <button
             onClick={() => presetHandler(presets[2].channels)}
-            className="btn btn-outline text-xs px-2 py-1.5 gap-1"
-            title="جليد"
+            className="btn btn-outline text-xs px-3 py-2 gap-1 font-semibold border-space-600 hover:border-nebula-400"
+            title={ar ? "جليد: 3.0 / 4.27 / 4.67 ميكرون" : "Ice: 3.0 / 4.27 / 4.67 µm"}
           >
-            <SlidersHorizontal className="w-3 h-3" /> جليد
+            <SlidersHorizontal className="w-3 h-3" /> {ar ? "جليد" : "Ice"}
           </button>
         </div>
       </div>
@@ -283,7 +311,7 @@ export default function CanvasViewer({
       {/* تمديد السطوع */}
       <div className="flex flex-wrap gap-3 p-3 border-b border-space-800 bg-space-900/60 backdrop-blur z-10">
         <div className="flex items-center gap-2 text-xs font-medium text-space-300 uppercase tracking-wider">
-          <SettingsIcon className="w-3 h-3" /> تمديد السطوع
+          <SettingsIcon className="w-3 h-3" /> {ar ? "تمديد السطوع" : "Brightness stretch"}
         </div>
         <div className="flex items-center gap-2 min-w-[140px]">
           <span className="text-[10px] text-space-500">percentile</span>
@@ -312,7 +340,7 @@ export default function CanvasViewer({
           <span className="text-[10px] text-space-500 ml-1">×{asinhCoeff}</span>
         </div>
         <div className="flex items-center gap-2 min-w-[140px]">
-          <span className="text-[10px] text-space-500">السطوع</span>
+          <span className="text-[10px] text-space-500">{ar ? "السطوع" : "Brightness"}</span>
           <input
             type="range"
             min={0.2}
@@ -327,21 +355,46 @@ export default function CanvasViewer({
       </div>
 
       {/* الكانفاس */}
-      <div className="flex-1 flex items-center justify-center bg-space-800/50 rounded-xl border border-space-800 overflow-hidden relative p-1">
-        <canvas
-          ref={canvasRef}
-          className="crisp-image w-full h-full max-w-full max-h-[60vh] object-contain"
-          onClick={handleClick}
-          style={{
-            imageRendering: "pixelated",
-            width: "100%",
-            height: "auto",
-            maxHeight: "60vh",
-            cursor: "crosshair",
-          }}
-        />
-        <div className="absolute bottom-2 left-2 text-[10px] text-space-500 bg-black/40 px-1.5 py-0.5 rounded">
-          {nx}×{ny} بكسل
+      <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl border border-space-800 overflow-hidden relative p-1">
+        <div className="relative" style={{ width: "100%", maxWidth: "min(100%, 68vh)" }}>
+          <canvas
+            ref={canvasRef}
+            className="crisp-image block w-full h-auto"
+            onClick={handleClick}
+            style={{
+              imageRendering: "pixelated",
+              cursor: "crosshair",
+            }}
+          />
+          {showMarkers && markers.length > 0 && (
+            <svg
+              viewBox={`0 0 ${nx} ${ny}`}
+              preserveAspectRatio="none"
+              className="absolute inset-0 w-full h-full"
+              aria-label="candidate markers"
+            >
+              {markers.map((m, i) => {
+                const color = m.score > 0.8 ? "#ef4444" : m.score > 0.6 ? "#f97316" : "#eab308";
+                return (
+                  <g
+                    key={`${m.x}-${m.y}-${i}`}
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onMarkerClick ? onMarkerClick(m.x, m.y) : onPixelSelect(m.x, m.y);
+                    }}
+                  >
+                    <circle cx={m.x + 0.5} cy={m.y + 0.5} r={3.2} fill="none" stroke={color} strokeWidth={0.7} opacity={0.95} />
+                    <circle cx={m.x + 0.5} cy={m.y + 0.5} r={1.2} fill={color} />
+                    <title>{`(${m.x}, ${m.y}) · score ${m.score.toFixed(2)}`}</title>
+                  </g>
+                );
+              })}
+            </svg>
+          )}
+        </div>
+        <div className="absolute bottom-2 left-2 text-[10px] text-space-300 bg-black/60 px-1.5 py-0.5 rounded">
+          {nx}×{ny} {ar ? "بكسل" : "px"}
         </div>
       </div>
     </div>
